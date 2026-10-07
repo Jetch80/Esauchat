@@ -1,0 +1,54 @@
+
+  const messagesQuery = query(
+    messagesRef,
+    orderBy("time", "asc")
+  );
+
+
+  const messagesBox = document.getElementById("messages");
+  const input = document.getElementById("messageInput");
+  const sendButton = document.getElementById("sendButton");
+
+
+  sendButton.addEventListener("click", async () => {
+
+    const text = input.value.trim();
+
+    if (!text) return;
+
+    await addDoc(messagesRef, {
+      name: "Esau",
+      text: text,
+      time: serverTimestamp()
+    });
+
+    input.value = "";
+  });
+
+
+  onSnapshot(messagesQuery, (snapshot) => {
+
+    messagesBox.innerHTML = "";
+
+    snapshot.forEach((doc) => {
+
+      const data = doc.data();
+
+      const message = document.createElement("div");
+      message.className = "message";
+
+      message.innerHTML = `
+        <div class="name">${data.name || "User"}</div>
+        <div>${data.text || ""}</div>
+      `;
+
+      messagesBox.appendChild(message);
+    });
+
+    messagesBox.scrollTop = messagesBox.scrollHeight;
+  });
+
+</script>
+
+</body>
+</html>
